@@ -10,33 +10,40 @@ This repository already utilizes SQAaaS and contains existing assessments. We wi
    cd yProv4SQA
    ```
 
-# **Setup the environment and install dependencies:**
-
-## Setup the environment and install dependencies
+## **Setup the environment and install dependencies:**
 
 ### 1. Create and activate a virtual environment (recommended)
 
-```bash
-# Create a virtual environment
-python -m venv yProv4SQA_venv
+   ```bash
+   # Create a virtual environment
+   python -m venv yProv4SQA_venv
 
-# Activate the virtual environment (Linux/macOS)
-source yProv4SQA_venv/bin/activate
+   # Activate the virtual environment (Linux/macOS)
+   source yProv4SQA_venv/bin/activate
 
-# Activate the virtual environment (Windows)
-yProv4SQA_venv\Scripts\activate
-
-
-**2. Install the library and required dependencies:**
+   # Activate the virtual environment (Windows)
+   yProv4SQA_venv\Scripts\activate
+   ```
+### **2. Install the library and required dependencies:**
    ```bash
    pip install -e .
    pip install requests
    ```
+This installs the library in editable mode, allowing you to modify the code and test changes immediately. It also installs the requests library, which is required to run the examples.
 
-**Fetch SQA reports:**
+## **SFetch SQA reports:**
    ```bash
    fetch-sqa-reports itwinai
    ```
+This command fetches all SQAaaS assessments for the `itwinai` repository from the EOSC-Synergy GitHub space.
+[EOSC-Synergy GitHub space](https://github.com/EOSC-synergy)
+
+The library will:
+- Download all available reports  
+- Remove duplicates and older versions  
+- Clean and preprocess the data  
+- Produce a final assessment folder for generating the provenance document
+
 
 **Generate provenance documents:**
    ```bash
