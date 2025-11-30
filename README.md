@@ -1,3 +1,6 @@
+# Artifact for “A Provenance-Based Architecture for Traceability in SQA Pipelines” (ICSA 2026)
+To gain complete insights about software quality evaluation, we introduce the concept of provenance for Software Quality Assurance processes called yProv4SQA, which is used for tracking the evolution of software quality over time by generating detailed provenance documents during software development.
+
 # Example: Using yProv4SQA with the iTwinAI Repository
 
 In this example, we demonstrate how to use our library by analyzing the the [iTwinAI GitHub repository](https://github.com/interTwin-eu/itwinai).  
@@ -5,8 +8,13 @@ In this example, we demonstrate how to use our library by analyzing the the [iTw
 This repository already utilizes SQAaaS and contains existing assessments. We will use it to Showcase the capabilities of our library and Extract insights related to software quality and provenance.
 
 ## GitHub API rate-limit notice
-To avoid delays we **strongly recommend** that you authenticate.
-*Export it in your shell (temporary)*
+GitHub allows:
+
+* **60 requests / hour** for **anonymous** calls (no token).  
+* **5000 requests / hour** when you supply a **personal-access token**.
+If you process many repositories for large histories you will quickly hit the 60/h ceiling and the tool will **pause** (it auto-retries after the reset time). To avoid delays we **strongly recommend** that you authenticate.
+
+**Export it in your shell (temporary)**
    ```bash
    export GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx #<replace with your GITHUB_TOKEN>
    ```
@@ -94,12 +102,14 @@ For convenience, we have already uploaded the graphs to the yProv server. You ca
 
 
 ### Usingy yProv and Neo4j for Provenance Visualization and Data Exploration
-The yProv service provides functionality for storing and managing W3C PROV-compliant provenance documents. After registering with the service, provenance documents can be uploaded and automatically synchronized with a Neo4j graph database for interactive exploration.
+We use the [yProv service](./Pre_requisites/yProv/README.md) to connect with a Neo4j database for exploring the provenance graph. After registering with the service, provenance documents can be uploaded and automatically synchronized with a Neo4j graph database for exploration.
+
 
 To set up the environment (yProv service + Neo4j database), please follow the instructions in: [Running yProv service](./Pre_requisites/yProv/README.md)
 
 Once both containers are running, you can interact with the yProv REST API as shown below.
-   
+
+
 Register to the yProv service
    ```bash
    curl -X POST http://localhost:3000/api/v0/auth/register -H 'Content-Type: application/json' -d '{"user": "...", "password": "..."}'
@@ -115,7 +125,8 @@ Load the JSON document associated to the PTA use case
 
 After uploading the provenance document, open Neo4j in your browser using the mapped ports, typically:
 http://localhost:7474/browser/
-Neo4j can now be used to run Cypher queries to inspect the provenance graph and explore relationships related to software quality assessments.
+
+Here are some sample queries that we use in our paper on the Neo4j database to perform analyses and extract results:
 
 Cypher Query (Listing 1)
 The following query retrieves commit metadata, quality criteria, and percentage values for each assessment:
