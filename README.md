@@ -2,14 +2,11 @@
 To gain complete insights about software quality evaluation, we introduce the concept of provenance for Software Quality Assurance processes called yProv4SQA, which is used for tracking the evolution of software quality over time by generating detailed provenance documents during software development.
 
 # Example: Using yProv4SQA with the iTwinAI Repository
-
-In this example, we demonstrate how to use our library by analyzing the the [iTwinAI GitHub repository](https://github.com/interTwin-eu/itwinai).  
-
-This repository already utilizes SQAaaS and contains existing assessments. We will use it to Showcase the capabilities of our library and Extract insights related to software quality and provenance.
+In this example, we demonstrate how to use our library by analyzing the [iTwinAI GitHub repository](https://github.com/interTwin-eu/itwinai).  
+This repository already utilizes SQAaaS and contains existing assessments. We will use it to showcase the capabilities of our library and extract insights related to software quality and provenance.
 
 ## GitHub API rate-limit notice
 GitHub allows:
-
 * **60 requests / hour** for **anonymous** calls (no token).  
 * **5000 requests / hour** when you supply a **personal-access token**.
 If you process many repositories for large histories you will quickly hit the 60/h ceiling and the tool will **pause** (it auto-retries after the reset time). To avoid delays we **strongly recommend** that you authenticate.
@@ -31,16 +28,13 @@ You should see "limit": 5000
    ```
    
 ## **Setup the environment and install dependencies:**
-
 ### 1. Create and activate a virtual environment (recommended)
-
    ```bash
    # Create a virtual environment
    python -m venv yProv4SQA_venv
 
    # Activate the virtual environment
    source yProv4SQA_venv/bin/activate
-
    ```
 This ensures that all dependencies are installed in an isolated environment, preventing conflicts with other Python packages on your system.
 
@@ -55,60 +49,46 @@ This installs the library and also installs the requests library, which is requi
    ```bash
    fetch-sqa-reports itwinai
    ```
-This command fetches all SQAaaS assessments for the `itwinai` repository from the [EOSC-Synergy GitHub space](https://github.com/EOSC-synergy). The library then downloads all available reports, removes duplicates and outdated versions, and produces a final cleaned folder used to generate the provenance document. For this example, the output folder will be created as `./itwinai_SQAaaS_reports`.
+This command fetches all SQAaaS assessments for the `itwinai` repository from the [EOSC-Synergy GitHub space](https://github.com/EOSC-synergy). The library then downloads all available reports, removes duplicates and outdated versions, and produces a final cleaned directory used to generate the provenance document. For this example, the output directory will be created as `./itwinai_SQAaaS_reports`.
 
 
 ## **Generate provenance documents:**
    ```bash
    process-provenance ./itwinai_SQAaaS_reports
    ```
-This command generates a provenance document of all assesment avaliable in itwinai_SQAaaS_reports folder using W3C PROV-DM standard.
-It will produce a .json file named `interTwin-eu_itwinai_prov_output.json` in Provenance_documents folder, which can be further used for exploration and analysis.
+This command generates a level-1 provenance document of all assessment available in itwinai_SQAaaS_reports directory using W3C PROV-DM standard. It will produce a `.json` file named `interTwin-eu_itwinai_prov_output.json` in Provenance_documents directory, which can be further used for exploration and analysis.
 
-## **Compare two assessments:**
+## **Comparing Two SQA Assessments with yProv4SQA**
    ```bash
    compare ./Provenance_documents/interTwin-eu_itwinai_prov_output.json 59 87
    ```
-This file `./Compare_commit_provenance/itwinai_commit_provenance_040b...ea8b_to_96fd...56c0.json`
-
+This command generates a level-2 provenance document that captures the file changes between the two selected assessments, integrates directly with URLs to the corresponding GitHub diff and SQAaaS reports, and stores the graph as `./Compare_commit_provenance/itwinai_commit_provenance_040b…ea8b_to_96fd…56c0.json`
 
 ## **Exploration of Provenance graph**
 We can use several tools to visualize and analyze the generated provenance document.
-### 1. Using the PROV Library
+### 1. PROV Library Visualization
 This PROV library can be used to check the PROV syntax, convert the provenance document into an SVG graph for standard visualization, and ensure compliance with the W3C PROV standard.
-
-**Command:**
    ```bash
-   json2graph.py prov_output.json
+   json2graph ./Provenance_documents/interTwin-eu_itwinai_prov_output.json
+   json2graph ./Compare_commit_provenance/itwinai_commit_provenance_040b…ea8b_to_96fd…56c0.json
    ```
-This will generate an .SVG graph representing the provenance. Graph_outputs
-Fig. 4 in the paper shows an example of the visualization generated by this command. The result of this command can be found in the folder: ./Graph_outputs/.
+This command converts the `.json` file into an `.svg` provenance graph and saves it to `./Graph_outputs`.
+The figure that appears as `Fig. 4` in the paper was generated using this command and  included as an example in `./results`.
 
 ### 2. Using yProv4Explorer
-
-The **yProv4Explorer** allows interactive exploration of the provenance document.  
-
-You can either:
-
-- Upload the `prov_output.json` file into the explorer, or  
-- Drag and drop the file for better visualization.  
-
+The **yProv4Explorer** allows interactive exploration of the provenance document. You can either Upload the `interTwin-eu_itwinai_prov_output.json` file into the explorer or drag and drop the file for  visualization.  
 Access the explorer here: [https://explorer.yprov.disi.unitn.it/](https://explorer.yprov.disi.unitn.it/)
 
-For convenience, we have already uploaded the graphs to the yProv server. You can directly open them without uploading the `.json` file:
+For convenience, we have already uploaded the graphs that we used in our paper to the yProv server. You can directly open them without uploading the `.json` file:
 
 - **Full assessment history (Fig. 5):** [View Graph](https://explorer.yprov.disi.unitn.it/?file=http%3A%2F%2Fyprov.disi.unitn.it%3A3000%2Fapi%2Fv0%2Fdocuments%2Fitwinai)  
-- **Bronze-vs-Silver diff (Fig. 7):** [View Graph](https://explorer.yprov.disi.unitn.it/?file=http%3A%2F%2Fyprov.disi.unitn.it%3A3000%2Fapi%2Fv0%2Fdocuments%2Fgitdif)
+- **file changes between the two assessments (Fig. 7):** [View Graph](https://explorer.yprov.disi.unitn.it/?file=http%3A%2F%2Fyprov.disi.unitn.it%3A3000%2Fapi%2Fv0%2Fdocuments%2Fgitdif)
 
 
-### Usingy yProv and Neo4j for Provenance Visualization and Data Exploration
+### 3. Using yProv and Neo4j for Provenance Visualization and Data Exploration
 We use the [yProv service](./Pre_requisites/yProv/README.md) to connect with a Neo4j database for exploring the provenance graph. After registering with the service, provenance documents can be uploaded and automatically synchronized with a Neo4j graph database for exploration.
-
-
 To set up the environment (yProv service + Neo4j database), please follow the instructions in: [Running yProv service](./Pre_requisites/yProv/README.md)
-
 Once both containers are running, you can interact with the yProv REST API as shown below.
-
 
 Register to the yProv service
    ```bash
@@ -118,7 +98,7 @@ Log in to the service to get a valid token for performing all the other operatio
    ```bash
    curl -X POST http://localhost:3000/api/v0/auth/login -H 'Content-Type: application/json' -d '{"user": "...", "password": "..."}'
    ```
-Load the JSON document associated to the PTA use case
+Load the JSON document associated with itwinai use case
    ```bash
    curl -X PUT  http://localhost:3000/api/v0/documents/itwinai -H "Content-Type: application/json" -H 'Authorization: Bearer <token>' -d @./Provenance_documents/interTwin-eu_itwinai_prov_output.json
    ```
@@ -126,12 +106,11 @@ Load the JSON document associated to the PTA use case
 After uploading the provenance document, open Neo4j in your browser using the mapped ports, typically:
 http://localhost:7474/browser/
 
-Here are some sample queries that we use in our paper on the Neo4j database to perform analyses and extract results:
+## **Sample Neo4j Queries**
+Below are the Neo4j queries we ran to extract and analyze the results presented in the paper.
 
-Cypher Query (Listing 1)
-The following query retrieves commit metadata, quality criteria, and percentage values for each assessment:
-
-   ```bash
+**Cypher Neo4j Query (Listing 1)**
+   ```cypher
    MATCH (e:Entity)-[:wasGeneratedBy]->(a:Activity)
    WHERE a.`ex:percentage` IS NOT NULL
    RETURN
@@ -141,15 +120,11 @@ The following query retrieves commit metadata, quality criteria, and percentage 
       a.`ex:percentage` AS PercentagePassed
    ORDER BY e.`ex:commit_date`
    ```
-The output of this query is available at [Results of Listing1](./Results/Queryresults/Listing1) 
+The query exports the raw data behind Fig. 6; the CSV file and the Excel line-chart we plotted are archived in [Results](.artifacts/results/Cypher_query_results) 
 
-After exporting the query result from Neo4j, the data can be imported into Excel and visualized using a line chart, similar to the chart presented in Figure 6 of the paper.
-The generated chart and dataset are also available at:[Results of Listing1](./Results/Queryresults/Listing1) 
 
-Cypher Query (Listing 2)
-
-The following query retrieves commit metadata, quality criteria, and percentage values for each assessment:
-   ```bash
+**Cypher Neo4j Query (Listing 2)**
+   ```cypher
    // Earliest Bronze badge
    MATCH (bronze:Entity)-[:wasDerivedFrom]->(bronze_ass:Entity)
    WHERE bronze.`ex:badge_won` = "bronze"
@@ -172,20 +147,4 @@ The following query retrieves commit metadata, quality criteria, and percentage 
    silver.`ex:badge_won` AS SilverBadge,
    silver_ass.id
    ```
-
-
-
-
-
-
-
-### 3. Using Neo4j Database visualization
-We use the **yProv service** to connect with a Neo4j database for exploring the provenance data.  
-This allows writing **Cypher queries** to analyze the provenance graph and retrieve specific results.
-Here are some sample queries that can be run on the Neo4j database to perform analyses and extract results:
-   ```cypher
-   // Example 1: Retrieve all nodes and relationships
-   MATCH (n)-[r]->(m) 
-   RETURN n, r, m;
-   ```
-
+The query in Listing 2 returns the last assessment ID that earned a bronze badge and the first one that achieved silver; the resulting [level-2 provenance graph](./results/Compare_commit_provenance). (Fig. 7) and query result are stored in [Results](./results/Cypher_query_results).
